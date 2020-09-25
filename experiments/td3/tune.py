@@ -37,7 +37,7 @@ def get_hypers(trial, args_path, tune_path):
 
 def objective(trial, args_path, tune_path, n_same_runs):
     hypers = get_hypers(trial, args_path, tune_path)
-    logs_dir = "logs/trial_{:3}".format(trial.number)
+    logs_dir = "logs/trial_{:3}".format(trial.number).replace(" ", "0")
     hypers["tensorboard_log"] = logs_dir
     return sum(run(**hypers) for i in range(n_same_runs))
 
@@ -54,7 +54,7 @@ def run_study(n_trials, storage, args_path, tune_path, n_same_runs):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n_trials", help="Number of trials for tuning",
-                        default=10, type=int, required=False)
+                        default=100, type=int, required=False)
     parser.add_argument("--args_path", help="Default argmuents path (also used for argparse)",
                         default="args.yaml", type=str, required=False)
     parser.add_argument("--tune_path", help="Tuning arguments yaml file path",
@@ -62,5 +62,5 @@ if __name__ == "__main__":
     parser.add_argument("--storage", help="Storage string for optuna",
                         default="sqlite:///td3.db", type=str, required=False)
     parser.add_argument("--n_same_runs", help="Number of calls with the same set of paremters",
-                        default=1, type=int, required=False)
+                        default=3, type=int, required=False)
     run_study(**vars(parser.parse_args()))
