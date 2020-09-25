@@ -1,0 +1,106 @@
+train-freq:
+    help: "Number of environment steps between each update loop"
+    default: 1
+    type: int
+    required: False
+gradient-steps:
+    help: "Update steps per rollout call"
+    default: 1
+    type: int
+    required: False
+batch_size:
+    help: "Batchsize of each update"
+    default: "32"
+    type: int
+    required: False
+envname:
+    help: "Gym environment"
+    default: "LunarLanderContinuous-v2"
+    type: str
+    required: False
+n_envs:
+    help: "Parallel environments in synch rollout gathering"
+    default: 1
+    type: int
+    required: False
+log_interval:
+    help: "Logging interval between update calls"
+    required: False
+    default: 5
+    type: int
+learning_starts:
+    help: "Number of steps before start updating"
+    default: 1000
+    type: int
+    required: False
+learning_rate:
+    help: "Learning rate of both networks"
+    default: !!float 1e-3
+    type: float
+    required: False
+buffer_size:
+    help: "Size of the replay memory"
+    default: 100000
+    type: int
+    required: False
+tau:
+    help: "Polyak update ratio"
+    default: 0.005
+    type: float
+    required: False
+gamma:
+    help: "Discount factor"
+    default: 0.99
+    type: float
+    required: False
+target_policy_noise:
+    help: "std of the target actor noise"
+    default: 0.2
+    type: float
+    required: False
+target_noise_clip:
+    help: "Target actor noise clip"
+    default: 0.5
+    type: float
+    required: False
+policy_kwargs:
+    help: "Actor and Critic policy keyword arguments"
+    default:
+        net_arch:
+            - 300
+            - 400
+    type: "str"
+    required: False
+total_timesteps:
+    help: "Length of the training in terms of timesteps"
+    default: 100000
+    type: int
+    required: False
+action_noise_mean:
+    help: "Policy action noise mean"
+    default: 0.0
+    type: float
+    required: False
+action_noise_sigma:
+    help: "Policy action noise variance"
+    default: 0.1
+    type: float
+    required: False
+noise_type:
+    help: "Action noise class name"
+    default: "OU"
+    type: str
+    choices:
+        - OU
+        - Normal
+    required: False 
+n_eval_episodes:
+    help: "Number of evaluations when its called"
+    default: 5
+    type: int
+    required: False
+eval_freq:
+    help: "Period of evaluation calls"
+    default: 2500
+    type: int
+    required: False
