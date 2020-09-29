@@ -20,7 +20,7 @@ envname:
     required: False
 n_envs:
     help: "Parallel environments in synch rollout gathering"
-    default: 2
+    default: 16
     type: int
     required: False
 log_interval:
@@ -66,10 +66,7 @@ target_noise_clip:
 policy_kwargs:
     help: "Actor and Critic policy keyword arguments"
     default:
-        actor_arch:
-            - 32
-            - 32
-        critic_arch:
+        net_arch:
             - 300
             - 400
     type: "str"
