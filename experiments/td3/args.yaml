@@ -20,7 +20,7 @@ envname:
     required: False
 n_envs:
     help: "Parallel environments in synch rollout gathering"
-    default: 2
+    default: 16
     type: int
     required: False
 log_interval:

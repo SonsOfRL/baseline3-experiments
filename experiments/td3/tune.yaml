@@ -10,21 +10,16 @@ gradient-steps:
     kwargs:
         choices:
             - 1
-            - 2
-            - 8
-            - 16
+            - 4
             - 64
-            - 128
             - 256
 batch_size:
     type: "suggest_categorical"
     kwargs:
         choices:
-            - 8
             - 32
             - 64
             - 128
-            - 256
 learning_starts:
     type: "suggest_categorical"
     kwargs:
@@ -75,21 +70,22 @@ policy_kwargs:
     type: "suggest_categorical"
     kwargs:
         choices:
-            - net_arch:
-                - 400
+            - actor_arch:
+                - 32
+                - 32
+              critic_arch:
                 - 300
-            - net_arch:
-                - 256
-                - 256
-            - net_arch:
-                - 128
-                - 128
-            - net_arch:
-                - 64
-                - 64
-            - net_arch:
+                - 400
+            - actor_arch:
                 - 32
-                - 32
+              critic_arch:
+                - 300
+                - 400
+            - actor_arch:
+                - 128
+              critic_arch:
+                - 256
+                - 266
 noise_type:
     type: "suggest_categorical"
     kwargs:
