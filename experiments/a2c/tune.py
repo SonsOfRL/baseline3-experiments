@@ -1,6 +1,7 @@
 import yaml
 import optuna
 import argparse
+import os
 from multiprocessing import Process
 
 from run import run
@@ -35,32 +36,34 @@ def get_hypers(trial, args_path, tune_path):
     return hyper_params
 
 
-def objective(trial, args_path, tune_path, n_same_runs):
+def objective(log_dir, trial, args_path, tune_path, n_same_runs):
     hypers = get_hypers(trial, args_path, tune_path)
-    logs_dir = "logs/trial_{:3}".format(trial.number).replace(" ", "0")
-    hypers["tensorboard_log"] = logs_dir
+    log_dir = os.path.join(log_dir, "trial_{:3}".format(trial.number).replace(" ", "0"))
+    hypers["tensorboard_log"] = log_dir
     return sum(run(**hypers) for i in range(n_same_runs)) / n_same_runs
 
 
-def run_study(n_trials, storage, args_path, tune_path, n_same_runs):
+def run_study(log_dir, n_trials, args_path, tune_path, n_same_runs):
+    os.makedirs(log_dir, exist_ok=True)
+    storage = "sqlite:///" + os.path.join(log_dir, "a2c.db")
     study = optuna.create_study(
-        storage=storage, study_name="td3", load_if_exists=True,
+        storage=storage, study_name="a2c", load_if_exists=True,
         direction="maximize", sampler=TPESampler())
     study.optimize(lambda trial: objective(
-        trial, args_path, tune_path, n_same_runs), n_trials=n_trials)
+        log_dir, trial, args_path, tune_path, n_same_runs), n_trials=n_trials)
     return study
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--log_dir", help="Logging directory for tensorboard objects",
+                        default="logs/", type=str, required=False)
     parser.add_argument("--n_trials", help="Number of trials for tuning",
                         default=100, type=int, required=False)
     parser.add_argument("--args_path", help="Default argmuents path (also used for argparse)",
                         default="args.yaml", type=str, required=False)
     parser.add_argument("--tune_path", help="Tuning arguments yaml file path",
                         default="tune.yaml", type=str, required=False)
-    parser.add_argument("--storage", help="Storage string for optuna",
-                        default="sqlite:///td3.db", type=str, required=False)
     parser.add_argument("--n_same_runs", help="Number of calls with the same set of paremters",
                         default=3, type=int, required=False)
     run_study(**vars(parser.parse_args()))

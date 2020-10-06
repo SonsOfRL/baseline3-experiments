@@ -11,6 +11,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.cmd_util import make_atari_env
 from stable_baselines3.common.vec_env import VecFrameStack
 from stable_baselines3.common.callbacks import EvalCallback
+from stable_baselines3.common.vec_env.vec_transpose import VecTransposeImage
 
 from lab_sb3.callbacks import LoggerCallback
 
@@ -19,6 +20,7 @@ def run(policy,
         envname,
         learning_rate,
         n_steps,
+        batch_size,
         epochs,
         gamma,
         gae_lambda,
@@ -39,6 +41,7 @@ def run(policy,
 
     # Normalize with multi environments
     seed = np.random.randint(1, 2**16)
+    log_interval = log_interval // (n_steps * n_envs)
     all_args = locals()
 
     path = "/" + os.path.join(*sb3.__file__.split("/")[:-2])
@@ -48,6 +51,10 @@ def run(policy,
     env = make_atari_env(envname, n_envs=n_envs, seed=seed)
     env = VecFrameStack(env, n_stack=n_stack)
 
+    eval_env = make_atari_env(envname, n_envs=1, vec_env_cls=DummyVecEnv)
+    eval_env = VecFrameStack(env, n_stack=n_stack)
+    eval_env = VecTransposeImage(env)
+
     # Callbacks
     loggercallback = LoggerCallback(
         "json",
@@ -55,16 +62,14 @@ def run(policy,
          ("git", commit_num)])
 
     # No seed as the evaluation has no effect on training or pruning
-    evalcallback = EvalCallback(
-        make_atari_env(envname, vec_env_cls=SubprocVecEnv),
-        n_eval_episodes=n_eval_episodes,
-        eval_freq=eval_freq)
+    
 
     # Initiate the model and start learning
     model = A2C(policy,
                 env,
                 learning_rate,
                 n_steps,
+                batch_size,
                 epochs,
                 gamma,
                 gae_lambda,
@@ -76,8 +81,13 @@ def run(policy,
                 verbose=verbose,
                 tensorboard_log=tensorboard_log,
                 seed=seed,
+                create_eval_env=True,
                 device="cuda")
 
+    evalcallback = EvalCallback(
+        eval_env,
+        n_eval_episodes=n_eval_episodes,
+        eval_freq=eval_freq)
 
     model.learn(total_timesteps=total_timesteps,
                 log_interval=log_interval,
@@ -97,6 +107,8 @@ def get_argparse_values(kwargs):
             kwargs[key] = float
         if value == "str":
             kwargs[key] = str
+        if value == "bool":
+            kwargs[key] = bool
 
     return kwargs
 

@@ -18,6 +18,16 @@ n_steps:
     default: 5
     type: int
     required: False
+epochs:
+    help: "Number of iterations of a rollout for each train call"
+    default: 1
+    type: int
+    required: False
+batch_size:
+    help: "Batch size of the rollout training"
+    default: null
+    type: int
+    required: False
 gamma:
     help: "Future reward discount rate"
     default: 0.99
@@ -75,11 +85,11 @@ n_stack:
     required: False
 total_timesteps:
     help: "Total environment time steps"
-    default: !!int 1e7
+    default: 10000000
     type: int
     required: False
 log_interval:
-    help: "Logging period (in terms of updates)"
-    default: null
-    type: null
+    help: "Logging period (in terms of steps)"
+    default: 25000
+    type: int
     required: False

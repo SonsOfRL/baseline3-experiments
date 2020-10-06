@@ -1,0 +1,7 @@
+train-freq:
+    type: "suggest_categorical"
+    kwargs:
+        choices:
+            - 1
+            - 2
+            - 5
