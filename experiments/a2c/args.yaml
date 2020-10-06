@@ -1,0 +1,85 @@
+policy:
+    help: "Name of the registered policy"
+    default: "CnnPolicy"
+    type: str
+    required: False
+envname:
+    help: "Open-AI Gym environment Name"
+    default: "PongNoFrameskip-v4"
+    type: str
+    required: False
+learning_rate:
+    help: "Learning rate of the both optimizers"
+    default: !!float 7e-4
+    type: float
+    required: False
+n_steps:
+    help: "Number of synchron steps taken for every rollouts"
+    default: 5
+    type: int
+    required: False
+gamma:
+    help: "Future reward discount rate"
+    default: 0.99
+    type: float
+    required: False
+gae_lambda:
+    help: "Generalized Advantage Estimation factor"
+    default: 1.0
+    type: float
+    required: False
+ent_coef:
+    help: "Multiplier of the entropy loss"
+    default: 0.0
+    type: float
+    required: False
+vf_coef:
+    help: "Multiplier of the value loss "
+    default: 0.5
+    type: float
+    required: False
+max_grad_norm:
+    help: "Upper boun of the gradient norm"
+    default: 0.5
+    type: float
+    required: False
+normalize_advantage:
+    help: "Advantage normalization within a batch"
+    default: False
+    type: bool
+    required: False
+policy_kwargs:
+    help: "Policy structure"
+    default: null
+    type: str
+    required: False
+n_eval_episodes:
+    help: "Number of full episoes at every evaluation call"
+    default: 5
+    type: int
+    required: False
+eval_freq:
+    help: "Evaluation call period (in terms of steps)"
+    default: 250000
+    type: int
+    required: False
+n_envs:
+    help: "Number of parallel environments"
+    default: 16
+    type: int
+    required: False
+n_stack:
+    help: "Frame stack for atari environments"
+    default: 4
+    type: int
+    required: False
+total_timesteps:
+    help: "Total environment time steps"
+    default: !!int 1e7
+    type: int
+    required: False
+log_interval:
+    help: "Logging period (in terms of updates)"
+    default: null
+    type: null
+    required: False
