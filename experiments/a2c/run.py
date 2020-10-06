@@ -52,8 +52,8 @@ def run(policy,
     env = VecFrameStack(env, n_stack=n_stack)
 
     eval_env = make_atari_env(envname, n_envs=1, vec_env_cls=DummyVecEnv)
-    eval_env = VecFrameStack(env, n_stack=n_stack)
-    eval_env = VecTransposeImage(env)
+    eval_env = VecFrameStack(eval_env, n_stack=n_stack)
+    eval_env = VecTransposeImage(eval_env)
 
     # Callbacks
     loggercallback = LoggerCallback(
@@ -81,7 +81,7 @@ def run(policy,
                 verbose=verbose,
                 tensorboard_log=tensorboard_log,
                 seed=seed,
-                create_eval_env=True,
+                create_eval_env=False,
                 device="cuda")
 
     evalcallback = EvalCallback(
