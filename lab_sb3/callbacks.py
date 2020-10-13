@@ -28,6 +28,8 @@ class LoggerCallback(BaseCallback):
         if self.log_on_start is not None:
             for pair in self.log_on_start:
                 _logger.record(*pair, ("tensorboard", "stdout"))
+                # TODO: Check for dumping
+                # _logger.dump()
 
     def _on_step(self) -> bool:
         """

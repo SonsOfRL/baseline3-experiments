@@ -17,6 +17,9 @@ def read_logs(logs_dir):
     experiment_data = {}
     for trial_name in tqdm(os.listdir(logs_dir), ncols=80, desc="Trials "):
         trial_path = os.path.join(logs_dir, trial_name)
+        if not os.path.isdir(trial_path):
+            warnings.warn("File at {} is passed".format(trial_path))
+            continue
 
         trial_data = {"data": []}
         for run_name in os.listdir(trial_path):
@@ -27,7 +30,7 @@ def read_logs(logs_dir):
                     data = list(map(json.loads, lines))
 
                     if "hyperparameters" in trial_data.keys():
-                        if trial_data["hyperparameters"] != data[0]["arguments"]:
+                        if not hyperparam_equallity(trial_data["hyperparameters"], data[0]["arguments"]):
                             warnings.warn("Run {} has a different set of hyperparameters at"
                                           "trial {} and it is PASSED!".format(
                                               run_name, trial_name))
@@ -43,8 +46,7 @@ def read_logs(logs_dir):
             else:
                 warnings.warn("Missing progress.json file for trial: {} and run: {}".format(
                     trial_name, run_name))
-        if len(experiment_data) > 5:
-            break
+
         experiment_data[trial_name] = trial_data
     return experiment_data
 
@@ -59,6 +61,17 @@ def load_experiment_data():
     
     with open("exp_data.b", "rb") as binf:
         return pickle.load(binf)
+
+
+def hyperparam_equallity(first_params, second_params, discarded_keys=["seed"]):
+    if tuple(first_params.keys()) != tuple(second_params.keys()):
+        return False
+    for key in first_params.keys():
+        if key in discarded_keys:
+            continue
+        if first_params[key] != second_params[key]:
+            return False
+    return True
 
 # def get_abstract_data(dataframes):
 #     for df in dataframes:
